@@ -100,6 +100,7 @@ def get_info_card(date):
 
 def get_top_transactions(date):
     full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
+
     df = pd.read_excel(full_path_file)
 
     start_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S").replace(day=1)
@@ -109,6 +110,8 @@ def get_top_transactions(date):
 
     # Получаем операций за нужный промежуток времени
     filtered_df = df[(df["Дата операции"] >= start_month) & (df["Дата операции"] <= end_month)]
+
+    df_negative = filtered_df[filtered_df["Сумма платежа"] < 0]
 
     df_top_five = filtered_df.nsmallest(5, "Сумма платежа")
 
