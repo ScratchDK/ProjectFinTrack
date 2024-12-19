@@ -1,4 +1,5 @@
 import os
+import json
 import yfinance as yf
 import requests
 import pandas as pd
@@ -12,8 +13,13 @@ base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def get_share_price():
+    full_path_file_data = os.path.join(base_dir, "data", "user_settings.json")
+
+    with open(full_path_file_data, encoding="utf-8") as file_json:
+        data = json.load(file_json)
+
     # Получаем список акций
-    stocks = ['AAPL', 'MSFT', 'GOOGL', 'AMZN']
+    stocks = data['user_stocks']
 
     # Создаем пустой словарь для хранения стоимости акций
     stock_prices = {}
@@ -23,10 +29,6 @@ def get_share_price():
         stock_data = yf.Ticker(stock)
         stock_price = stock_data.history(period='1d')['Close'].iloc[0]
         stock_prices[stock] = stock_price
-
-    # Выводим список акций и их стоимость
-    # for stock, price in stock_prices.items():
-    #     print(f'{stock} - {price}')
 
     list_stocks = []
 
@@ -38,7 +40,12 @@ def get_share_price():
 
 
 def get_currencies_rates():
-    list_currencies = ["USD", "EUR"]
+    full_path_file_data = os.path.join(base_dir, "data", "user_settings.json")
+
+    with open(full_path_file_data, encoding="utf-8") as file_json:
+        data = json.load(file_json)
+
+    list_currencies = data["user_currencies"]
 
     exchange_rates_data_api = os.getenv("API_Key")
 

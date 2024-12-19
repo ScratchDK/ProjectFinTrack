@@ -1,20 +1,7 @@
 import json
-import re
 from datetime import datetime
 
 from src.utils import get_share_price, get_currencies_rates, get_info_card, get_top_transactions
-
-
-# Поиск
-# new_df = df[df["Описание"].str.contains(r'\+\d+')]
-
-# Возможно в топ 5 транзакций потом уйдет
-#
-# filter_category_spending = filtered_df.groupby('Категория')['Сумма платежа'].sum()
-#
-# df_top_spending = filter_category_spending.to_frame()
-# top_spending = df_top_spending.sort_values(by='Сумма платежа', ascending=True).head(5)
-# result = top_spending.to_dict()
 
 
 def main(date):
@@ -51,7 +38,3 @@ def main(date):
     json_data = json.dumps(data_list, ensure_ascii=False)
 
     return json_data
-
-
-df_test = main("12.03.2021 06:53:12")
-print(df_test)
