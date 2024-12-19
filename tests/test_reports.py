@@ -1,5 +1,6 @@
 import pytest
 import pandas as pd
+from unittest.mock import patch
 from src.reports import spending_by_category
 
 
@@ -24,7 +25,7 @@ from src.reports import spending_by_category
                 "Категория": ["Супермаркеты"],
             },
         )
-    ],
+    ]
 )
 def test_spending_by_category(data, category, date, expected):
     df = pd.DataFrame(data)

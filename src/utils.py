@@ -27,7 +27,7 @@ def get_share_price():
     # Получаем стоимость каждой акции и добавляем в словарь
     for stock in stocks:
         stock_data = yf.Ticker(stock)
-        stock_price = stock_data.history(period='1d')['Close'].iloc[0]
+        stock_price = stock_data.history(period='1Y')['Close'].iloc[0]
         stock_prices[stock] = stock_price
 
     list_stocks = []
@@ -94,7 +94,6 @@ def get_info_card(date):
             "cashback": round(float(abs(total / 100)), 2)
         }
         list_cards.append(cards)
-
     return list_cards
 
 
@@ -113,7 +112,7 @@ def get_top_transactions(date):
 
     df_negative = filtered_df[filtered_df["Сумма платежа"] < 0]
 
-    df_top_five = filtered_df.nsmallest(5, "Сумма платежа")
+    df_top_five = df_negative.nsmallest(5, "Сумма платежа")
 
     list_top_five = []
 
@@ -127,3 +126,6 @@ def get_top_transactions(date):
         list_top_five.append(dict_top_five)
 
     return list_top_five
+
+
+print(get_share_price())
