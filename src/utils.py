@@ -12,14 +12,14 @@ load_dotenv()
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def get_share_price():
+def get_share_price() -> list:
     full_path_file_data = os.path.join(base_dir, "data", "user_settings.json")
 
     with open(full_path_file_data, encoding="utf-8") as file_json:
         data = json.load(file_json)
 
     # Получаем список акций
-    stocks = data['user_stocks']
+    stocks = data["user_stocks"]
 
     # Создаем пустой словарь для хранения стоимости акций
     stock_prices = {}
@@ -27,7 +27,7 @@ def get_share_price():
     # Получаем стоимость каждой акции и добавляем в словарь
     for stock in stocks:
         stock_data = yf.Ticker(stock)
-        stock_price = stock_data.history(period='1Y')['Close'].iloc[0]
+        stock_price = stock_data.history(period="ytd")["Close"].iloc[0]
         stock_prices[stock] = stock_price
 
     list_stocks = []
@@ -36,10 +36,11 @@ def get_share_price():
         stocks = {"stocks": stock, "price": round(float(abs(price)), 2)}
         list_stocks.append(stocks)
 
+    print(list_stocks)
     return list_stocks
 
 
-def get_currencies_rates():
+def get_currencies_rates() -> list:
     full_path_file_data = os.path.join(base_dir, "data", "user_settings.json")
 
     with open(full_path_file_data, encoding="utf-8") as file_json:
@@ -54,9 +55,7 @@ def get_currencies_rates():
     for el in list_currencies:
         url = f"https://api.apilayer.com/exchangerates_data/convert?to=RUB&from={el}&amount=1"
 
-        headers = {
-            "apikey": exchange_rates_data_api
-        }
+        headers = {"apikey": exchange_rates_data_api}
 
         response = requests.request("GET", url, headers=headers)
 
@@ -67,20 +66,26 @@ def get_currencies_rates():
     return list_currencies_rates
 
 
-def get_info_card(date):
+def get_info_card(date: str) -> list:
     full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
     df = pd.read_excel(full_path_file)
 
     start_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S").replace(day=1)
     end_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S") + timedelta(days=1)
 
-    df["Дата операции"] = pd.to_datetime(df["Дата операции"], format="%d.%m.%Y %H:%M:%S")
+    df["Дата операции"] = pd.to_datetime(
+        df["Дата операции"], format="%d.%m.%Y %H:%M:%S"
+    )
 
     # Получаем операций за нужный промежуток времени
-    filtered_df = df[(df["Дата операции"] >= start_month) & (df["Дата операции"] <= end_month)]
+    filtered_df = df[
+        (df["Дата операции"] >= start_month) & (df["Дата операции"] <= end_month)
+    ]
 
     # Получаем только операций со знаком "-" и те чей статус "ОК"
-    df_expenses = filtered_df[(filtered_df["Сумма операции"] < 0) & (filtered_df["Статус"] == 'OK')]
+    df_expenses = filtered_df[
+        (filtered_df["Сумма операции"] < 0) & (filtered_df["Статус"] == "OK")
+    ]
 
     # Группируем df по номерам карт и получаем общю сумму трат на каждую карту
     total_expenses = df_expenses.groupby("Номер карты")["Сумма операции"].sum()
@@ -88,16 +93,17 @@ def get_info_card(date):
     list_cards = []
 
     for card, total in total_expenses.items():
+        card_str = str(card)
         cards = {
-            "last_digits": card[-4:],
+            "last_digits": card_str[-4:],
             "total_spent": round(float(abs(total)), 2),
-            "cashback": round(float(abs(total / 100)), 2)
+            "cashback": round(float(abs(total / 100)), 2),
         }
         list_cards.append(cards)
     return list_cards
 
 
-def get_top_transactions(date):
+def get_top_transactions(date: str) -> list:
     full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
 
     df = pd.read_excel(full_path_file)
@@ -105,10 +111,14 @@ def get_top_transactions(date):
     start_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S").replace(day=1)
     end_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S") + timedelta(days=1)
 
-    df["Дата операции"] = pd.to_datetime(df["Дата операции"], format="%d.%m.%Y %H:%M:%S")
+    df["Дата операции"] = pd.to_datetime(
+        df["Дата операции"], format="%d.%m.%Y %H:%M:%S"
+    )
 
     # Получаем операций за нужный промежуток времени
-    filtered_df = df[(df["Дата операции"] >= start_month) & (df["Дата операции"] <= end_month)]
+    filtered_df = df[
+        (df["Дата операции"] >= start_month) & (df["Дата операции"] <= end_month)
+    ]
 
     df_negative = filtered_df[filtered_df["Сумма платежа"] < 0]
 
@@ -121,11 +131,8 @@ def get_top_transactions(date):
             "date": str(row["Дата операции"]),
             "amount": row["Сумма платежа"],
             "category": row["Категория"],
-            "description": row["Описание"]
+            "description": row["Описание"],
         }
         list_top_five.append(dict_top_five)
 
     return list_top_five
-
-
-print(get_share_price())

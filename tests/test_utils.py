@@ -36,7 +36,6 @@ def test_get_share_price():
     with patch("json.load") as mock_get:
         mock_get.return_value = {"user_stocks": ["AAPL", "GOOGL", "TSLA"]}
         assert get_share_price() == [
-            {'stocks': 'AAPL', 'price': 195.98},
-            {'stocks': 'GOOGL', 'price': 136.16},
-            {'stocks': 'TSLA', 'price': 257.22}
-        ]
+            {'stocks': 'AAPL', 'price': 184.73},
+            {'stocks': 'GOOGL', 'price': 137.67},
+            {'stocks': 'TSLA', 'price': 248.42}]

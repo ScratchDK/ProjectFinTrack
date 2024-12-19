@@ -5,7 +5,9 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 
 
-def spending_by_category(df: pd.DataFrame, category: str, date: Optional[str] = None) -> pd.DataFrame:
+def spending_by_category(
+    df: pd.DataFrame, category: str, date: Optional[str] = None
+) -> pd.DataFrame:
 
     if date is None:
         date = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
