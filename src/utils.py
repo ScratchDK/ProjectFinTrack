@@ -1,5 +1,6 @@
 import os
 import json
+import logging
 import yfinance as yf
 import requests
 import pandas as pd
@@ -11,8 +12,18 @@ load_dotenv()
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+path_file_logs = full_path_file_logs = os.path.join(base_dir, "logs", "utils.log")
+
+logger = logging.getLogger(__name__)
+file_handler = logging.FileHandler(path_file_logs, encoding="utf-8", mode="w")
+file_formatter = logging.Formatter("%(asctime)s - %(filename)s [%(funcName)s] - %(levelname)s - %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.DEBUG)
+
 
 def get_share_price() -> list:
+    logger.info("Старт")
     full_path_file_data = os.path.join(base_dir, "data", "user_settings.json")
 
     with open(full_path_file_data, encoding="utf-8") as file_json:
@@ -36,11 +47,12 @@ def get_share_price() -> list:
         stocks = {"stocks": stock, "price": round(float(abs(price)), 2)}
         list_stocks.append(stocks)
 
-    print(list_stocks)
+    logger.info("Данные переданы")
     return list_stocks
 
 
 def get_currencies_rates() -> list:
+    logger.info("Старт")
     full_path_file_data = os.path.join(base_dir, "data", "user_settings.json")
 
     with open(full_path_file_data, encoding="utf-8") as file_json:
@@ -63,10 +75,12 @@ def get_currencies_rates() -> list:
         dict_currencies = {"currency": el, "rate": result["result"]}
         list_currencies_rates.append(dict_currencies)
 
+    logger.info("Данные переданы")
     return list_currencies_rates
 
 
 def get_info_card(date: str) -> list:
+    logger.info("Старт")
     full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
     df = pd.read_excel(full_path_file)
 
@@ -100,10 +114,13 @@ def get_info_card(date: str) -> list:
             "cashback": round(float(abs(total / 100)), 2),
         }
         list_cards.append(cards)
+
+    logger.info("Данные переданы")
     return list_cards
 
 
 def get_top_transactions(date: str) -> list:
+    logger.info("Старт")
     full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
 
     df = pd.read_excel(full_path_file)
@@ -135,4 +152,5 @@ def get_top_transactions(date: str) -> list:
         }
         list_top_five.append(dict_top_five)
 
+    logger.info("Данные переданы")
     return list_top_five
