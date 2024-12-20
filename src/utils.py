@@ -81,7 +81,7 @@ def get_currencies_rates() -> list:
     return list_currencies_rates
 
 
-def get_info_card(date: str) -> list:
+def get_info_card(date: str) -> list | str:
     logger.info("Старт")
     full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
 
@@ -126,7 +126,7 @@ def get_info_card(date: str) -> list:
     return list_cards
 
 
-def get_top_transactions(date: str) -> list:
+def get_top_transactions(date: str) -> list | str:
     logger.info("Старт")
     full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
 
