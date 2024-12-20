@@ -1,11 +1,11 @@
-import os
 import json
 import logging
-import yfinance as yf
-import requests
-import pandas as pd
+import os
 from datetime import datetime, timedelta
 
+import pandas as pd
+import requests
+import yfinance as yf
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,7 +16,9 @@ path_file_logs = full_path_file_logs = os.path.join(base_dir, "logs", "utils.log
 
 logger = logging.getLogger(__name__)
 file_handler = logging.FileHandler(path_file_logs, encoding="utf-8", mode="w")
-file_formatter = logging.Formatter("%(asctime)s - %(filename)s [%(funcName)s] - %(levelname)s - %(message)s")
+file_formatter = logging.Formatter(
+    "%(asctime)s - %(filename)s [%(funcName)s] - %(levelname)s - %(message)s"
+)
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
@@ -69,7 +71,7 @@ def get_currencies_rates() -> list:
 
         headers = {"apikey": exchange_rates_data_api}
 
-        response = requests.request("GET", url, headers=headers)
+        response = requests.get(url, headers=headers)
 
         result = response.json()
         dict_currencies = {"currency": el, "rate": result["result"]}

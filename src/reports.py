@@ -1,8 +1,8 @@
+import logging
 import os
 from datetime import datetime, timedelta
 from typing import Optional
 
-import logging
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
@@ -12,13 +12,17 @@ path_file_logs = full_path_file_logs = os.path.join(base_dir, "logs", "reports.l
 
 logger = logging.getLogger(__name__)
 file_handler = logging.FileHandler(path_file_logs, encoding="utf-8", mode="w")
-file_formatter = logging.Formatter("%(asctime)s - %(filename)s [%(funcName)s] - %(levelname)s - %(message)s")
+file_formatter = logging.Formatter(
+    "%(asctime)s - %(filename)s [%(funcName)s] - %(levelname)s - %(message)s"
+)
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
 
 
-def spending_by_category(df: pd.DataFrame, category: str, date: Optional[str] = None) -> pd.DataFrame:
+def spending_by_category(
+    df: pd.DataFrame, category: str, date: Optional[str] = None
+) -> pd.DataFrame:
     logger.info("Старт")
     if date is None:
         date = datetime.now().strftime("%d.%m.%Y %H:%M:%S")

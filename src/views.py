@@ -1,14 +1,9 @@
-import os
 import json
 import logging
+import os
 from datetime import datetime
 
-from src.utils import (
-    get_share_price,
-    get_currencies_rates,
-    get_info_card,
-    get_top_transactions,
-)
+from src.utils import get_currencies_rates, get_info_card, get_share_price, get_top_transactions
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -16,13 +11,15 @@ path_file_logs = full_path_file_logs = os.path.join(base_dir, "logs", "views.log
 
 logger = logging.getLogger(__name__)
 file_handler = logging.FileHandler(path_file_logs, encoding="utf-8", mode="w")
-file_formatter = logging.Formatter("%(asctime)s - %(filename)s [%(funcName)s] - %(levelname)s - %(message)s")
+file_formatter = logging.Formatter(
+    "%(asctime)s - %(filename)s [%(funcName)s] - %(levelname)s - %(message)s"
+)
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
 
 
-def main(date):
+def main(date: str) -> str:
     logger.info("Старт")
     try:
         date_obj = datetime.strptime(date, "%d.%m.%Y %H:%M:%S")
