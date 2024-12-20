@@ -20,9 +20,14 @@ logger.setLevel(logging.DEBUG)
 def search_by_phone_number() -> str:
     logger.info("Старт")
     full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
-    df = pd.read_excel(full_path_file)
 
-    df_phone_number = df[df["Описание"].str.contains(r"\+\d+")]
+    try:
+        df = pd.read_excel(full_path_file)
+    except Exception as e:
+        logger.error(f"{type(e).__name__}, файл не найден!")
+        return type(e).__name__
+
+    df_phone_number = df[df["Описание"].str.contains(r"\+\d|7\d+")]
 
     data_json = df_phone_number.to_json(orient="records", force_ascii=False)
 

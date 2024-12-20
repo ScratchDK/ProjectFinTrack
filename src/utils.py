@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pandas as pd
 import requests
@@ -84,10 +84,15 @@ def get_currencies_rates() -> list:
 def get_info_card(date: str) -> list:
     logger.info("Старт")
     full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
-    df = pd.read_excel(full_path_file)
 
-    start_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S").replace(day=1)
-    end_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S") + timedelta(days=1)
+    try:
+        df = pd.read_excel(full_path_file)
+    except Exception as e:
+        logger.error(f"{type(e).__name__}, файл не найден!")
+        return type(e).__name__
+
+    start_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S").replace(day=1, hour=0, minute=0, second=0)
+    end_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S")
 
     df["Дата операции"] = pd.to_datetime(
         df["Дата операции"], format="%d.%m.%Y %H:%M:%S"
@@ -125,10 +130,14 @@ def get_top_transactions(date: str) -> list:
     logger.info("Старт")
     full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
 
-    df = pd.read_excel(full_path_file)
+    try:
+        df = pd.read_excel(full_path_file)
+    except Exception as e:
+        logger.error(f"{type(e).__name__}, файл не найден!")
+        return type(e).__name__
 
-    start_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S").replace(day=1)
-    end_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S") + timedelta(days=1)
+    start_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S").replace(day=1, hour=0, minute=0, second=0)
+    end_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S")
 
     df["Дата операции"] = pd.to_datetime(
         df["Дата операции"], format="%d.%m.%Y %H:%M:%S"
@@ -156,3 +165,6 @@ def get_top_transactions(date: str) -> list:
 
     logger.info("Данные переданы")
     return list_top_five
+
+
+print(get_top_transactions("25.12.2021 19:00:00"))
