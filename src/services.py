@@ -5,7 +5,7 @@ import pandas as pd
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-path_file_logs = full_path_file_logs = os.path.join(base_dir, "logs", "services.log")
+path_file_logs = os.path.join(base_dir, "logs", "services.log")
 
 logger = logging.getLogger(__name__)
 file_handler = logging.FileHandler(path_file_logs, encoding="utf-8", mode="w")

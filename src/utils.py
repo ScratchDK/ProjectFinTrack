@@ -12,7 +12,7 @@ load_dotenv()
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-path_file_logs = full_path_file_logs = os.path.join(base_dir, "logs", "utils.log")
+path_file_logs = os.path.join(base_dir, "logs", "utils.log")
 
 logger = logging.getLogger(__name__)
 file_handler = logging.FileHandler(path_file_logs, encoding="utf-8", mode="w")
@@ -81,15 +81,15 @@ def get_currencies_rates() -> list:
     return list_currencies_rates
 
 
-def get_info_card(date: str) -> list | str:
+def get_info_card(date: str) -> list:
     logger.info("Старт")
-    full_path_file = os.path.join(base_dir, "data", "operations_errors.xlsx")
+    full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
 
     try:
         df = pd.read_excel(full_path_file)
     except Exception as e:
         logger.error(f"{type(e).__name__}, файл не найден!")
-        return type(e).__name__
+        return []
 
     df.dropna(subset=[
         "Дата операции",
@@ -139,16 +139,15 @@ def get_info_card(date: str) -> list | str:
     return list_cards
 
 
-def get_top_transactions(date: str) -> list | str:
+def get_top_transactions(date: str) -> list:
     logger.info("Старт")
-    full_path_file = os.path.join(base_dir, "data", "operations_errors.xlsx")
-
-    df = ""
+    full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
 
     try:
         df = pd.read_excel(full_path_file)
     except Exception as e:
         logger.error(f"{type(e).__name__}, файл не найден!")
+        return []
 
     start_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S").replace(day=1, hour=0, minute=0, second=0)
     end_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S")

@@ -7,7 +7,7 @@ from src.utils import get_currencies_rates, get_info_card, get_share_price, get_
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-path_file_logs = full_path_file_logs = os.path.join(base_dir, "logs", "views.log")
+path_file_logs = os.path.join(base_dir, "logs", "views.log")
 
 logger = logging.getLogger(__name__)
 file_handler = logging.FileHandler(path_file_logs, encoding="utf-8", mode="w")
@@ -55,6 +55,3 @@ def main(date: str) -> str:
 
     logger.info("Данные переданы")
     return json_data
-
-
-print(main("25.12.2021 19:00:00"))
