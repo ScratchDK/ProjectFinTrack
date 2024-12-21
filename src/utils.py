@@ -83,13 +83,23 @@ def get_currencies_rates() -> list:
 
 def get_info_card(date: str) -> list | str:
     logger.info("Старт")
-    full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
+    full_path_file = os.path.join(base_dir, "data", "operations_errors.xlsx")
 
     try:
         df = pd.read_excel(full_path_file)
     except Exception as e:
         logger.error(f"{type(e).__name__}, файл не найден!")
         return type(e).__name__
+
+    df.dropna(subset=[
+        "Дата операции",
+        "Номер карты",
+        "Сумма платежа",
+        "Сумма операции",
+        "Категория",
+        "Описание",
+        "Статус"
+    ], inplace=True)
 
     start_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S").replace(day=1, hour=0, minute=0, second=0)
     end_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S")
@@ -102,6 +112,9 @@ def get_info_card(date: str) -> list | str:
     filtered_df = df[
         (df["Дата операции"] >= start_month) & (df["Дата операции"] <= end_month)
     ]
+
+    filtered_df.dropna(subset=[
+        "Дата операции", "Сумма операции", 'Сумма платежа', "Категория", "Описание"], inplace=True)
 
     # Получаем только операций со знаком "-" и те чей статус "ОК"
     df_expenses = filtered_df[
@@ -128,13 +141,14 @@ def get_info_card(date: str) -> list | str:
 
 def get_top_transactions(date: str) -> list | str:
     logger.info("Старт")
-    full_path_file = os.path.join(base_dir, "data", "operations.xlsx")
+    full_path_file = os.path.join(base_dir, "data", "operations_errors.xlsx")
+
+    df = ""
 
     try:
         df = pd.read_excel(full_path_file)
     except Exception as e:
         logger.error(f"{type(e).__name__}, файл не найден!")
-        return type(e).__name__
 
     start_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S").replace(day=1, hour=0, minute=0, second=0)
     end_month = datetime.strptime(date, "%d.%m.%Y %H:%M:%S")
@@ -147,6 +161,9 @@ def get_top_transactions(date: str) -> list | str:
     filtered_df = df[
         (df["Дата операции"] >= start_month) & (df["Дата операции"] <= end_month)
     ]
+
+    filtered_df.dropna(subset=[
+        "Дата операции", "Сумма операции", 'Сумма платежа', "Категория", "Описание"], inplace=True)
 
     df_negative = filtered_df[filtered_df["Сумма платежа"] < 0]
 
@@ -165,6 +182,3 @@ def get_top_transactions(date: str) -> list | str:
 
     logger.info("Данные переданы")
     return list_top_five
-
-
-print(get_top_transactions("25.12.2021 19:00:00"))

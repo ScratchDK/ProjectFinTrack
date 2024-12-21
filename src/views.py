@@ -55,3 +55,6 @@ def main(date: str) -> str:
 
     logger.info("Данные переданы")
     return json_data
+
+
+print(main("25.12.2021 19:00:00"))
