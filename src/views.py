@@ -57,4 +57,4 @@ def main(date: str) -> str:
     return json_data
 
 
-main("28.12.2021 19:00:00")
+print(main("28.12.2021 19:00:00"))
